@@ -1,24 +1,39 @@
 import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
-
-// ✅ FIXED PATHS
-import MainDashboard from "./pages/Dashboard/MainDashboard";
-import InventoryDashboard from "./pages/Inventory/InventoryDashboard";
-import StockPage from "./pages/Inventory/Stock/StockPage";
-import PurchasesPage from "./pages/Inventory/Purchases/PurchasesPage";
+import Login from "./pages/Auth/Login.jsx";
+import MainDashboard from "./pages/Dashboard/MainDashboard.jsx";
+import InventoryDashboard from "./pages/Inventory/InventoryDashboard.jsx";
+import StockPage from "./pages/Inventory/Stock/StockPage.jsx";
+import LowStockAlerts from "./pages/Inventory/Stock/LowStockAlerts.jsx";
+import StockTransactions from "./pages/Inventory/Stock/StockTransactions.jsx";
+import ProtectedRoute from "./app/ProtectedRoute.jsx";
 
 function App() {
   return (
     <BrowserRouter>
       <Routes>
-        {/* Default redirect */}
-        <Route path="/" element={<Navigate to="/inventory/dashboard" />} />
+        <Route path="/" element={<Navigate to="/login" replace />} />
+        <Route path="/login" element={<Login />} />
 
-        {/* Dashboard Layout */}
-        <Route path="/inventory" element={<MainDashboard />}>
+        {/* Inventory routes */}
+        <Route
+          path="/inventory/*"
+          element={
+            <ProtectedRoute>
+              <MainDashboard />
+            </ProtectedRoute>
+          }
+        >
           <Route path="dashboard" element={<InventoryDashboard />} />
+          <Route path="stockpage" element={<StockPage />} />
           <Route path="stock" element={<StockPage />} />
-          <Route path="purchases" element={<PurchasesPage />} />
+          <Route path="stock/items" element={<StockPage />} />
+          <Route path="stock/low" element={<LowStockAlerts />} />
+          <Route path="stock/transactions" element={<StockTransactions />} />
+          {/* Add more pages here */}
         </Route>
+
+        {/* Catch-all */}
+        <Route path="*" element={<Navigate to="/login" replace />} />
       </Routes>
     </BrowserRouter>
   );

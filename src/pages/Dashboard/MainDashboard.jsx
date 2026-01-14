@@ -1,5 +1,6 @@
-import React from "react";
-import { Link, Outlet } from "react-router-dom";
+import React, { useState, useEffect } from "react";
+import { NavLink, Outlet } from "react-router-dom";
+import { useAuth } from "../../context/AuthContext.jsx";
 import {
   AiOutlineHome,
   AiOutlineStock,
@@ -11,156 +12,188 @@ import {
   AiOutlineSwap,
   AiOutlineBarChart,
   AiOutlineTool,
+  AiOutlineMenu,
+  AiOutlineDown,
+  AiOutlineUp,
 } from "react-icons/ai";
 import { FiBell, FiUser, FiSettings, FiLogOut } from "react-icons/fi";
 
-const SIDEBAR_WIDTH = 270;
-
-const sidebarLinks = [
-  { name: "Dashboard", icon: AiOutlineHome, path: "/inventory/dashboard" },
-  { name: "Stock", icon: AiOutlineStock, path: "/inventory/stock" },
-  { name: "Purchases", icon: AiOutlineShoppingCart, path: "/inventory/purchases" },
-  { name: "Vendors", icon: AiOutlineShop, path: "/inventory/vendors" },
-  { name: "Locations", icon: AiOutlineEnvironment, path: "/inventory/locations" },
-  { name: "Projects", icon: AiOutlineProject, path: "/inventory/projects" },
-  { name: "Delivery Challan", icon: AiOutlineTruck, path: "/inventory/delivery" },
-  { name: "Relocation", icon: AiOutlineSwap, path: "/inventory/relocation" },
-  { name: "Reports", icon: AiOutlineBarChart, path: "/inventory/reports" },
-  { name: "Maintenance", icon: AiOutlineTool, path: "/inventory/maintenance" },
+// Example low stock data; replace with real data from context/API
+const exampleProducts = [
+  { id: 1, name: "Switches", quantity: 3, reorderLevel: 5 },
+  { id: 2, name: "Hub", quantity: 8, reorderLevel: 10 },
+  { id: 3, name: "Router", quantity: 2, reorderLevel: 5 },
 ];
 
-const linkStyle = {
-  color: "#fff",
-  textDecoration: "none",
-  display: "flex",
-  alignItems: "center",
-  gap: "12px",
-  padding: "12px 15px",
-  borderRadius: "8px",
-  fontWeight: 600,
-  fontSize: "1.05rem",
-  transition: "background 0.25s ease",
-};
-
-const cardStyle = {
-  flex: "1 1 220px",
-  background: "#fff",
-  padding: "25px",
-  borderRadius: "14px",
-  boxShadow: "0 6px 20px rgba(0,0,0,0.08)",
-  fontSize: "1.05rem",
-  color: "#111827",
-  minWidth: "220px",
-};
-
 const MainDashboard = () => {
+  const { user, logout } = useAuth();
+  const [sidebarOpen, setSidebarOpen] = useState(true);
+  const [collapsed, setCollapsed] = useState(false);
+  const [stockMenuOpen, setStockMenuOpen] = useState(true);
+
+  // Dynamic low stock count
+  const lowStockCount = exampleProducts.filter(p => p.quantity <= p.reorderLevel).length;
+
+  // Responsive: auto open/close sidebar on resize
+  useEffect(() => {
+    const handleResize = () => setSidebarOpen(window.innerWidth >= 768);
+    handleResize();
+    window.addEventListener("resize", handleResize);
+    return () => window.removeEventListener("resize", handleResize);
+  }, []);
+
+  // Sidebar Links with optional children
+  const sidebarLinks = [
+    { name: "Dashboard", icon: AiOutlineHome, path: "/inventory/dashboard" },
+    {
+      name: "Stock",
+      icon: AiOutlineStock,
+      badge: lowStockCount,
+      children: [
+        { name: "Overview", path: "/inventory/stock" },
+        { name: "Items", path: "/inventory/stock/items" },
+        { name: "Transactions", path: "/inventory/stock/transactions" },
+        { name: "Low Stock Alerts", path: "/inventory/stock/low" },
+      ],
+    },
+    { name: "Purchases", icon: AiOutlineShoppingCart, path: "/inventory/purchasespage" },
+    { name: "Vendors", icon: AiOutlineShop, path: "/inventory/vendors" },
+    { name: "Locations", icon: AiOutlineEnvironment, path: "/inventory/locationspage" },
+    { name: "Projects", icon: AiOutlineProject, path: "/inventory/projectspage" },
+    { name: "Delivery", icon: AiOutlineTruck, path: "/inventory/deliverypage" },
+    { name: "Relocation", icon: AiOutlineSwap, path: "/inventory/reallocation" },
+    { name: "Reports", icon: AiOutlineBarChart, path: "/inventory/reportspage" },
+    { name: "Maintenance", icon: AiOutlineTool, path: "/inventory/maintenancepage" },
+  ];
+
   return (
-    <div
-      style={{
-        display: "flex",
-        width: "100vw",
-        height: "100vh",
-        overflow: "hidden",
-        fontFamily: "'Segoe UI', sans-serif",
-      }}
-    >
+    <div className="flex min-h-screen bg-slate-50">
+
       {/* Sidebar */}
-      <aside
-        style={{
-          width: SIDEBAR_WIDTH,
-          minWidth: SIDEBAR_WIDTH,
-          height: "100vh",
-          background: "linear-gradient(180deg, #1E3A8A, #2563EB)",
-          color: "#fff",
-          padding: "30px 20px",
-          display: "flex",
-          flexDirection: "column",
-          justifyContent: "space-between",
-        }}
-      >
-        <div>
-          <h2 style={{ fontSize: "2rem", marginBottom: "50px", fontWeight: 700 }}>
-            📦 Inventory
-          </h2>
+      {sidebarOpen && (
+        <>
+          <aside
+            className={`fixed md:relative z-20 h-screen bg-gradient-to-b from-blue-900 to-blue-600 text-white transition-all duration-300
+              ${collapsed ? "w-20" : "w-64"} p-6`}
+          >
+            {/* Logo / Title */}
+            <div className="flex items-center justify-between mb-8">
+              {!collapsed && <h2 className="text-2xl font-bold">📦 Inventory</h2>}
+              {collapsed ? (
+                <button className="text-white" onClick={() => setCollapsed(false)}>☰</button>
+              ) : (
+                <button className="text-white md:hidden" onClick={() => setSidebarOpen(false)}>✖</button>
+              )}
+            </div>
 
-          <div style={{ marginBottom: "40px" }}>
-            <p style={{ fontWeight: 700, fontSize: "1.1rem" }}>Samiksha Singh</p>
-            <p style={{ fontSize: "0.95rem", color: "#CBD5E1" }}>Admin</p>
-          </div>
+            {/* User Info */}
+            {!collapsed && (
+              <div className="mb-6">
+                <p className="font-bold truncate">{user?.email}</p>
+                <p className="text-sm text-slate-300 capitalize">{user?.role}</p>
+              </div>
+            )}
 
-          <nav style={{ display: "flex", flexDirection: "column", gap: "10px" }}>
-            {sidebarLinks.map((link, index) => (
-              <Link
-                key={index}
-                to={link.path}
-                style={linkStyle}
-                onMouseEnter={(e) =>
-                  (e.currentTarget.style.backgroundColor = "#3B82F6")
-                }
-                onMouseLeave={(e) =>
-                  (e.currentTarget.style.backgroundColor = "transparent")
-                }
+            {/* Navigation */}
+            <nav className="flex flex-col gap-1 overflow-y-auto h-[calc(100vh-10rem)]">
+              {sidebarLinks.map((link) => (
+                <div key={link.name}>
+                  {/* Main Link */}
+                  <NavLink
+                    to={link.path}
+                    end={!link.children}
+                    className={({ isActive }) =>
+                      `flex items-center gap-3 px-3 py-2 rounded-lg font-semibold transition duration-200
+                      ${isActive ? "bg-white/20" : "hover:bg-white/10"}`
+                    }
+                    title={link.name}
+                    onClick={() => link.children && setStockMenuOpen(!stockMenuOpen)}
+                  >
+                    <link.icon size={22} />
+                    {!collapsed && <span>{link.name}</span>}
+                    {!collapsed && link.badge && (
+                      <span className="ml-auto bg-red-500 text-xs px-2 py-0.5 rounded-full font-bold">{link.badge}</span>
+                    )}
+                    {!collapsed && link.children && (
+                      <span className="ml-auto">{stockMenuOpen ? <AiOutlineUp /> : <AiOutlineDown />}</span>
+                    )}
+                  </NavLink>
+
+                  {/* Child Links */}
+                  {!collapsed && link.children && stockMenuOpen && (
+                    <div className="ml-6 mt-1 flex flex-col gap-1">
+                      {link.children.map((child) => (
+                        <NavLink
+                          key={child.path}
+                          to={child.path}
+                          className={({ isActive }) =>
+                            `flex items-center gap-2 px-3 py-2 rounded-lg font-medium transition duration-200
+                            ${isActive ? "bg-white/20" : "hover:bg-white/10"}`
+                          }
+                        >
+                          {child.name}
+                        </NavLink>
+                      ))}
+                    </div>
+                  )}
+                </div>
+              ))}
+
+              {/* Admin Panel */}
+              {user?.role === "admin" && (
+                <NavLink
+                  to="/inventory/admin"
+                  className={({ isActive }) =>
+                    `mt-4 flex items-center gap-3 px-3 py-2 rounded-lg font-semibold transition duration-200
+                    ${isActive ? "bg-white/30" : "hover:bg-white/10"}`
+                  }
+                  title="Admin Panel"
+                >
+                  🔒
+                  {!collapsed && <span>Admin Panel</span>}
+                </NavLink>
+              )}
+
+              {/* Collapse toggle */}
+              <button
+                onClick={() => setCollapsed(!collapsed)}
+                className="mt-6 flex items-center justify-center w-full p-2 rounded-lg hover:bg-white/10"
               >
-                {React.createElement(link.icon, { size: 22 })}
-                {link.name}
-              </Link>
-            ))}
-          </nav>
-        </div>
-      </aside>
+                <AiOutlineMenu size={22} />
+              </button>
+            </nav>
+          </aside>
+
+          {/* Mobile Overlay */}
+          {sidebarOpen && window.innerWidth < 768 && (
+            <div className="fixed inset-0 bg-black/40 z-10" onClick={() => setSidebarOpen(false)} />
+          )}
+        </>
+      )}
 
       {/* Main Content */}
-      <main
-        style={{
-          flex: 1,
-          height: "100vh",
-          backgroundColor: "#F8FAFC",
-          padding: "28px",
-          overflowY: "auto",
-          overflowX: "hidden",
-          boxSizing: "border-box",
-        }}
-      >
+      <main className={`flex-1 p-5 md:ml-0 ${!collapsed && sidebarOpen ? "md:ml-64" : ""}`}>
         {/* Header */}
-        <div
-          style={{
-            display: "flex",
-            justifyContent: "space-between",
-            alignItems: "center",
-            marginBottom: "28px",
-          }}
-        >
-          <h1 style={{ fontSize: "2rem", fontWeight: 700 }}>
-            📊 Inventory Dashboard
-          </h1>
+        <header className="flex items-center justify-between mb-6">
+          <div className="flex items-center gap-3">
+            <AiOutlineMenu
+              size={26}
+              className="cursor-pointer md:hidden"
+              onClick={() => setSidebarOpen(true)}
+            />
+            <h1 className="text-2xl font-bold">Inventory Dashboard</h1>
+          </div>
 
-          <div style={{ display: "flex", gap: "20px", fontSize: "1.4rem", color: "#374151" }}>
+          <div className="flex gap-4 text-xl items-center">
             <FiBell />
             <FiSettings />
-            <FiLogOut />
+            <button onClick={logout}><FiLogOut /></button>
             <FiUser />
           </div>
-        </div>
+        </header>
 
-        {/* Stats Cards */}
-        <div
-          style={{
-            display: "flex",
-            gap: "24px",
-            flexWrap: "wrap",
-            marginBottom: "36px",
-          }}
-        >
-          <div style={cardStyle}>📦 Total Stock<br /><strong>12,345 Items</strong></div>
-          <div style={cardStyle}>⚠️ Low Stock Alerts<br /><strong>8 Alerts</strong></div>
-          <div style={cardStyle}>📝 Pending Orders<br /><strong>15 Orders</strong></div>
-          <div style={cardStyle}>🔄 Items to Reallocate<br /><strong>5 Transfers</strong></div>
-        </div>
-
-        {/* Child Routes */}
-        <div style={{ width: "100%", minHeight: "200px" }}>
-          <Outlet />
-        </div>
+        {/* Nested pages */}
+        <Outlet />
       </main>
     </div>
   );

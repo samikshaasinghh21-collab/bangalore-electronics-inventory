@@ -1,30 +1,30 @@
-import React, { useState } from "react";
-import { AuthContext } from "./AuthContext.js";
+import React, { createContext, useContext, useState } from "react";
 
+// ✅ Create context
+export const AuthContext = createContext();
+
+// ✅ Provider
 export const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(null);
-  const [loading, setLoading] = useState(false);
 
   const login = async (email, password) => {
-    setLoading(true);
-
-    // TEMP LOGIN (replace with API)
     if (email === "admin@be.com" && password === "admin123") {
-      setUser({ email });
-      setLoading(false);
+      setUser({ email, role: "admin" });
+    } else if (email === "user@be.com" && password === "user123") {
+      setUser({ email, role: "user" });
     } else {
-      setLoading(false);
       throw new Error("Invalid credentials");
     }
   };
 
-  const logout = () => {
-    setUser(null);
-  };
+  const logout = () => setUser(null);
 
   return (
-    <AuthContext.Provider value={{ user, login, logout, loading }}>
+    <AuthContext.Provider value={{ user, login, logout }}>
       {children}
     </AuthContext.Provider>
   );
 };
+
+// ✅ Custom hook
+export const useAuth = () => useContext(AuthContext);
