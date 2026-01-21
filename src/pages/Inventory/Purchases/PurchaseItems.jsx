@@ -1,7 +1,7 @@
-import React, { useState } from "react";
-
+import React from "react";
+ 
 const StockItems = () => {
-  const [items, setItems] = useState([
+  const items = [
     {
       id: 1,
       name: "MX204-HWBASE-AC-FS",
@@ -55,6 +55,7 @@ const StockItems = () => {
       description: "SW, MX, 4x100GE ports, Adv1, Class 1, Perpetual",
       hsn: "997331",
       qty: 2,
+      
       unit: "Nos",
       rate: 201567.49,
     },
@@ -176,74 +177,48 @@ const StockItems = () => {
       unit: "Nos",
       rate: 1746.77,
     },
-  ]);
-
-  const increaseQty = (id) => {
-    setItems(items.map(i =>
-      i.id === id ? { ...i, qty: i.qty + 1 } : i
-    ));
-  };
-
-  const decreaseQty = (id) => {
-    setItems(items.map(i =>
-      i.id === id && i.qty > 1 ? { ...i, qty: i.qty - 1 } : i
-    ));
-  };
-
-  const deleteItem = (id) => {
-    setItems(items.filter(i => i.id !== id));
-  };
-
+  ];
+ 
   return (
     <div className="p-6 bg-gray-100 min-h-screen">
-      <h1 className="text-3xl font-bold mb-2">
-        Purchase Order – Stock Items
-      </h1>
-      <p className="mb-4 text-gray-600">
-        Bangalore Electronics · PO# 2K25BEPO7
-      </p>
-
+      <h1 className="text-3xl font-bold mb-2">Purchase Order – Stock Items</h1>
+      <p className="mb-4 text-gray-600">Bangalore Electronics · PO# 2K25BEPO7</p>
+ 
       <div className="overflow-x-auto bg-white rounded-xl shadow">
         <table className="w-full table-auto text-sm">
           <thead className="bg-gray-200">
-            <tr>
+            <tr className="text-left">
               <th className="px-4 py-2">#</th>
               <th className="px-4 py-2">Item</th>
               <th className="px-4 py-2">Description</th>
               <th className="px-4 py-2">HSN</th>
-              <th className="px-4 py-2 text-center">Qty</th>
+              <th className="px-4 py-2 text-right">Qty</th>
               <th className="px-4 py-2 text-right">Rate (₹)</th>
               <th className="px-4 py-2 text-right">Amount (₹)</th>
-              <th className="px-4 py-2 text-center">Action</th>
             </tr>
           </thead>
-
           <tbody>
             {items.map((item, index) => (
-              <tr key={item.id} className="border-b hover:bg-gray-50">
+              <tr
+                key={item.id}
+                className="border-b hover:bg-gray-50 transition"
+              >
                 <td className="px-4 py-2">{index + 1}</td>
                 <td className="px-4 py-2 font-medium">{item.name}</td>
-                <td className="px-4 py-2 text-gray-600">{item.description}</td>
+                <td className="px-4 py-2 text-gray-600 max-w-md">
+                  {item.description}
+                </td>
                 <td className="px-4 py-2">{item.hsn}</td>
-
-                <td className="px-4 py-2">
-                  <div className="flex justify-center gap-2">
-                    <button onClick={() => decreaseQty(item.id)}>−</button>
-                    <span>{item.qty}</span>
-                    <button onClick={() => increaseQty(item.id)}>+</button>
-                  </div>
-                </td>
-
+                <td className="px-4 py-2 text-right">{item.qty}</td>
                 <td className="px-4 py-2 text-right">
-                  {item.rate.toLocaleString("en-IN", { minimumFractionDigits: 2 })}
+                  {item.rate.toLocaleString("en-IN", {
+                    minimumFractionDigits: 2,
+                  })}
                 </td>
-
                 <td className="px-4 py-2 text-right font-semibold">
-                  {(item.qty * item.rate).toLocaleString("en-IN", { minimumFractionDigits: 2 })}
-                </td>
-
-                <td className="px-4 py-2 text-center">
-                  <button onClick={() => deleteItem(item.id)}>🗑</button>
+                  {(item.qty * item.rate).toLocaleString("en-IN", {
+                    minimumFractionDigits: 2,
+                  })}
                 </td>
               </tr>
             ))}
@@ -253,5 +228,7 @@ const StockItems = () => {
     </div>
   );
 };
-
+ 
 export default StockItems;
+ 
+ 

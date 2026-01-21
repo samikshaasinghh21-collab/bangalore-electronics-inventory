@@ -1,202 +1,90 @@
-import React, { useState, useEffect } from "react";
-import { NavLink, Outlet } from "react-router-dom";
-import { useAuth } from "../../context/AuthContext.jsx";
-import {
-  AiOutlineHome,
-  AiOutlineStock,
-  AiOutlineShoppingCart,
-  AiOutlineShop,
-  AiOutlineEnvironment,
-  AiOutlineProject,
-  AiOutlineTruck,
-  AiOutlineSwap,
-  AiOutlineBarChart,
-  AiOutlineTool,
-  AiOutlineMenu,
-  AiOutlineDown,
-  AiOutlineUp,
-} from "react-icons/ai";
-import { FiBell, FiUser, FiSettings, FiLogOut } from "react-icons/fi";
+import PageLayout from "../../components/layout/PageLayout";
+import BarChart from "../../components/charts/BarChart"; // default import
+import { LineChart } from "../../components/charts/LineChart"; // named import
+import PieChart from "../../components/charts/PieChart";   // optional
 
-// Example low stock data; replace with real data from context/API
-const exampleProducts = [
-  { id: 1, name: "Switches", quantity: 3, reorderLevel: 5 },
-  { id: 2, name: "Hub", quantity: 8, reorderLevel: 10 },
-  { id: 3, name: "Router", quantity: 2, reorderLevel: 5 },
-];
-
-const MainDashboard = () => {
-  const { user, logout } = useAuth();
-  const [sidebarOpen, setSidebarOpen] = useState(true);
-  const [collapsed, setCollapsed] = useState(false);
-  const [stockMenuOpen, setStockMenuOpen] = useState(true);
-
-  // Dynamic low stock count
-  const lowStockCount = exampleProducts.filter(p => p.quantity <= p.reorderLevel).length;
-
-  // Responsive: auto open/close sidebar on resize
-  useEffect(() => {
-    const handleResize = () => setSidebarOpen(window.innerWidth >= 768);
-    handleResize();
-    window.addEventListener("resize", handleResize);
-    return () => window.removeEventListener("resize", handleResize);
-  }, []);
-
-  // Sidebar Links with optional children
-  const sidebarLinks = [
-    { name: "Dashboard", icon: AiOutlineHome, path: "/inventory/dashboard" },
-    {
-      name: "Stock",
-      icon: AiOutlineStock,
-      badge: lowStockCount,
-      children: [
-        { name: "Overview", path: "/inventory/stock" },
-        { name: "Items", path: "/inventory/stock/items" },
-        { name: "Transactions", path: "/inventory/stock/transactions" },
-        { name: "Low Stock Alerts", path: "/inventory/stock/low" },
-      ],
-    },
-    { name: "Purchases", icon: AiOutlineShoppingCart, path: "/inventory/purchasespage" },
-    { name: "Vendors", icon: AiOutlineShop, path: "/inventory/vendors" },
-    { name: "Locations", icon: AiOutlineEnvironment, path: "/inventory/locationspage" },
-    { name: "Projects", icon: AiOutlineProject, path: "/inventory/projectspage" },
-    { name: "Delivery", icon: AiOutlineTruck, path: "/inventory/deliverypage" },
-    { name: "Relocation", icon: AiOutlineSwap, path: "/inventory/reallocation" },
-    { name: "Reports", icon: AiOutlineBarChart, path: "/inventory/reportspage" },
-    { name: "Maintenance", icon: AiOutlineTool, path: "/inventory/maintenancepage" },
-  ];
-
+export default function MainDashboard() {
   return (
-    <div className="flex min-h-screen bg-slate-50">
+    <PageLayout>
+      {/* KPI CARDS */}
+      <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-6">
+        <StatCard title="Total Sales (INR)" value="6,32,50,893" />
+        <StatCard title="Total Purchase (INR)" value="3,15,68,980" />
+        <StatCard title="Outstanding (INR)" value="1,59,47,688" />
+        <StatCard title="Low Stock Items" value="18" danger />
+      </div>
 
-      {/* Sidebar */}
-      {sidebarOpen && (
-        <>
-          <aside
-            className={`fixed md:relative z-20 h-screen bg-gradient-to-b from-blue-900 to-blue-600 text-white transition-all duration-300
-              ${collapsed ? "w-20" : "w-64"} p-6`}
-          >
-            {/* Logo / Title */}
-            <div className="flex items-center justify-between mb-8">
-              {!collapsed && <h2 className="text-2xl font-bold">📦 Inventory</h2>}
-              {collapsed ? (
-                <button className="text-white" onClick={() => setCollapsed(false)}>☰</button>
-              ) : (
-                <button className="text-white md:hidden" onClick={() => setSidebarOpen(false)}>✖</button>
-              )}
-            </div>
+      {/* CONTENT GRID */}
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+        <Card className="lg:col-span-2">
+          <h2 className="font-semibold mb-4">Recent Invoices</h2>
+          <table className="w-full text-sm">
+            <thead>
+              <tr className="text-left border-b">
+                <th>Invoice</th>
+                <th>Customer</th>
+                <th>Date</th>
+                <th className="text-right">Amount</th>
+              </tr>
+            </thead>
+            <tbody>
+              <InvoiceRow no="INV-25" customer="Yadav Electronics" amount="72,216" date="24/Jan/2026"/>
+              <InvoiceRow no="INV-24" customer="Rana Enterprises" amount="39,500" date="20/Jan/2026"/>
+              <InvoiceRow no="INV-23" customer="Sharma Agencies" amount="32,500" date="18/Jan/2026"/>
+            </tbody>
+          </table>
+        </Card>
 
-            {/* User Info */}
-            {!collapsed && (
-              <div className="mb-6">
-                <p className="font-bold truncate">{user?.email}</p>
-                <p className="text-sm text-slate-300 capitalize">{user?.role}</p>
-              </div>
-            )}
+        <Card>
+          <h2 className="font-semibold mb-2">Today’s Invoice</h2>
+          <p className="text-3xl font-bold mb-4">₹72,216</p>
+          <button className="w-full bg-teal-600 text-white py-2 rounded-lg hover:bg-teal-700 transition">
+            + Create Invoice
+          </button>
+        </Card>
+      </div>
 
-            {/* Navigation */}
-            <nav className="flex flex-col gap-1 overflow-y-auto h-[calc(100vh-10rem)]">
-              {sidebarLinks.map((link) => (
-                <div key={link.name}>
-                  {/* Main Link */}
-                  <NavLink
-                    to={link.path}
-                    end={!link.children}
-                    className={({ isActive }) =>
-                      `flex items-center gap-3 px-3 py-2 rounded-lg font-semibold transition duration-200
-                      ${isActive ? "bg-white/20" : "hover:bg-white/10"}`
-                    }
-                    title={link.name}
-                    onClick={() => link.children && setStockMenuOpen(!stockMenuOpen)}
-                  >
-                    <link.icon size={22} />
-                    {!collapsed && <span>{link.name}</span>}
-                    {!collapsed && link.badge && (
-                      <span className="ml-auto bg-red-500 text-xs px-2 py-0.5 rounded-full font-bold">{link.badge}</span>
-                    )}
-                    {!collapsed && link.children && (
-                      <span className="ml-auto">{stockMenuOpen ? <AiOutlineUp /> : <AiOutlineDown />}</span>
-                    )}
-                  </NavLink>
+      {/* CHARTS */}
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mt-6">
+        <Card>
+          <h2 className="font-semibold mb-4">Sales vs Purchase</h2>
+          <BarChart />
+        </Card>
 
-                  {/* Child Links */}
-                  {!collapsed && link.children && stockMenuOpen && (
-                    <div className="ml-6 mt-1 flex flex-col gap-1">
-                      {link.children.map((child) => (
-                        <NavLink
-                          key={child.path}
-                          to={child.path}
-                          className={({ isActive }) =>
-                            `flex items-center gap-2 px-3 py-2 rounded-lg font-medium transition duration-200
-                            ${isActive ? "bg-white/20" : "hover:bg-white/10"}`
-                          }
-                        >
-                          {child.name}
-                        </NavLink>
-                      ))}
-                    </div>
-                  )}
-                </div>
-              ))}
+        <Card>
+          <h2 className="font-semibold mb-4">Receipts & Expenses</h2>
+          <LineChart />
+        </Card>
+      </div>
+    </PageLayout>
+  );
+}
 
-              {/* Admin Panel */}
-              {user?.role === "admin" && (
-                <NavLink
-                  to="/inventory/admin"
-                  className={({ isActive }) =>
-                    `mt-4 flex items-center gap-3 px-3 py-2 rounded-lg font-semibold transition duration-200
-                    ${isActive ? "bg-white/30" : "hover:bg-white/10"}`
-                  }
-                  title="Admin Panel"
-                >
-                  🔒
-                  {!collapsed && <span>Admin Panel</span>}
-                </NavLink>
-              )}
-
-              {/* Collapse toggle */}
-              <button
-                onClick={() => setCollapsed(!collapsed)}
-                className="mt-6 flex items-center justify-center w-full p-2 rounded-lg hover:bg-white/10"
-              >
-                <AiOutlineMenu size={22} />
-              </button>
-            </nav>
-          </aside>
-
-          {/* Mobile Overlay */}
-          {sidebarOpen && window.innerWidth < 768 && (
-            <div className="fixed inset-0 bg-black/40 z-10" onClick={() => setSidebarOpen(false)} />
-          )}
-        </>
-      )}
-
-      {/* Main Content */}
-      <main className={`flex-1 p-5 md:ml-0 ${!collapsed && sidebarOpen ? "md:ml-64" : ""}`}>
-        {/* Header */}
-        <header className="flex items-center justify-between mb-6">
-          <div className="flex items-center gap-3">
-            <AiOutlineMenu
-              size={26}
-              className="cursor-pointer md:hidden"
-              onClick={() => setSidebarOpen(true)}
-            />
-            <h1 className="text-2xl font-bold">Inventory Dashboard</h1>
-          </div>
-
-          <div className="flex gap-4 text-xl items-center">
-            <FiBell />
-            <FiSettings />
-            <button onClick={logout}><FiLogOut /></button>
-            <FiUser />
-          </div>
-        </header>
-
-        {/* Nested pages */}
-        <Outlet />
-      </main>
+// --- Helper Components ---
+function StatCard({ title, value, danger }) {
+  return (
+    <div
+      className={`rounded-xl p-5 shadow ${
+        danger ? "bg-red-100 text-red-700" : "bg-white"
+      }`}
+    >
+      <p className="text-sm">{title}</p>
+      <p className="text-2xl font-bold mt-1">{value}</p>
     </div>
   );
-};
+}
 
-export default MainDashboard;
+function Card({ children, className = "" }) {
+  return <div className={`bg-white rounded-xl shadow p-5 ${className}`}>{children}</div>;
+}
+
+function InvoiceRow({ no, customer, amount, date }) {
+  return (
+    <tr className="border-b last:border-none">
+      <td>{no}</td>
+      <td>{customer}</td>
+      <td>{date}</td>
+      <td className="text-right font-medium">₹{amount}</td>
+    </tr>
+  );
+}

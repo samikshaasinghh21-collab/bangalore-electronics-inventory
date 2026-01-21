@@ -1,4 +1,12 @@
-import Login from "../pages/Auth/Login";
+import MainDashboard from "../pages/Dashboard/MainDashboard";
+
+export const routes = [
+  {
+    path: "/dashboard",
+    element: <MainDashboard />,
+  },
+];
+
 import MainDashboard from "../pages/Dashboard/MainDashboard";
 import Admin from "../pages/Admin/Admin";
 import ProtectedRoute from "./ProtectedRoute";

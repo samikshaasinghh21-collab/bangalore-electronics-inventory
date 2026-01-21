@@ -1,6 +1,8 @@
 import React, { useState } from "react";
-import { FaPlus, FaFileCsv, FaFilePdf } from "react-icons/fa";
+import { FaPlus, FaFileCsv, FaFilePdf, FaBoxOpen, FaExclamationTriangle, FaExchangeAlt } from "react-icons/fa";
+import { AiOutlineStock } from "react-icons/ai";
 import { PieChart, Pie, Cell, Tooltip, Legend, ResponsiveContainer, BarChart, Bar, XAxis, YAxis, CartesianGrid } from "recharts";
+import { Link } from "react-router-dom";
 
 // Sample product stock data
 const initialProducts = [
@@ -75,6 +77,26 @@ const StockPage = () => {
           <button className="bg-red-600 text-white px-4 py-2 rounded-lg flex items-center gap-2 hover:bg-red-700 transition">
             <FaFilePdf /> PDF
           </button>
+        </div>
+      </div>
+
+      {/* Navigation Cards */}
+      <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-6">
+        <Link to="/inventory/stock/items" className="bg-white shadow rounded-xl p-5 flex flex-col items-center justify-center hover:shadow-lg transition">
+          <FaBoxOpen className="text-4xl text-blue-600 mb-2" />
+          <div className="text-lg font-semibold">Stock Items</div>
+        </Link>
+        <Link to="/inventory/stock/transactions" className="bg-white shadow rounded-xl p-5 flex flex-col items-center justify-center hover:shadow-lg transition">
+          <FaExchangeAlt className="text-4xl text-green-600 mb-2" />
+          <div className="text-lg font-semibold">Stock Transactions</div>
+        </Link>
+        <Link to="/inventory/stock/low" className="bg-white shadow rounded-xl p-5 flex flex-col items-center justify-center hover:shadow-lg transition">
+          <FaExclamationTriangle className="text-4xl text-red-600 mb-2" />
+          <div className="text-lg font-semibold">Low Stock Alerts</div>
+        </Link>
+        <div className="bg-white shadow rounded-xl p-5 flex flex-col items-center justify-center">
+          <AiOutlineStock className="text-4xl text-purple-600 mb-2" />
+          <div className="text-lg font-semibold">Stock Overview</div>
         </div>
       </div>
 
