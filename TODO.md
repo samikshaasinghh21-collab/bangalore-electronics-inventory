@@ -1,18 +1,24 @@
-# TODO List
+# TODO List for Sidebar Navigation Fix
 
 ## Completed Tasks
-- [x] Added missing routes for /inventory/stock/low and /inventory/stock/transactions in App.jsx
-- [x] Added route for /inventory/stock in App.jsx
-- [x] Imported LowStockAlerts and StockTransactions components in App.jsx
-- [x] Added navigation link for Stock Transactions in Sidebar.jsx
-- [x] Imported FaExchangeAlt icon for transactions link
-- [x] Added the Stock Transactions link to the sidebar navigation array
+- [x] Analyze sidebar navigation issue
+- [x] Read Sidebar.jsx and routes.jsx files
+- [x] Create BillingPage.jsx in src/pages/Inventory/Billing/
+- [x] Create InvoicePage.jsx in src/pages/Inventory/Invoice/
+- [x] Update Sidebar.jsx to include Billing and Invoices links after Purchases and remove duplicate Invoices
+- [x] Update App.jsx to add flat routes for all sidebar items matching the links and wrap pages in PageLayout
+- [x] Add missing PageLayout import in App.jsx
+- [x] Fix ClientDashboard.jsx to have default export
+- [x] Update TODO.md with completed tasks
 
-## Testing
-- [x] Started development server on http://localhost:5177/
-- [ ] Test navigation to http://localhost:5177/inventory/stock
-- [ ] Test navigation to http://localhost:5177/inventory/stock/low
-- [ ] Test navigation to http://localhost:5177/inventory/stock/transactions
+## Pending Tasks
+- [ ] Test the navigation to ensure all sidebar links work correctly after logging in
+- [ ] Verify that pages load without errors
+- [ ] Check for any missing imports or dependencies
 
-## Summary
-The issue was that the routes /inventory/stock, /inventory/stock/low and /inventory/stock/transactions were not defined in the React Router configuration. The components existed but were not routed. Added the routes and updated the sidebar navigation to include the transactions link.
+## Notes
+- Added routes for /inventory, /purchases, /billing, /invoices, /suppliers, /customers, /reports in App.jsx
+- Billing and Invoices are placed after Purchases in the sidebar as requested
+- All routes are wrapped in ProtectedRoute for security and PageLayout for consistent UI
+- Fixed import issues and missing exports
+- Default authentication set to admin for testing

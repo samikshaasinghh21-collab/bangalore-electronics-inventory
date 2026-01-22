@@ -24,7 +24,7 @@ const Login = () => {
     } else {
       await login("admin@be.com", "admin123");
     }
-    navigate("/inventory/dashboard");
+    navigate("/dashboard");
   };
 
   return (

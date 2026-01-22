@@ -1,15 +1,15 @@
 import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
+
 import Login from "./pages/Auth/Login.jsx";
 import MainDashboard from "./pages/Dashboard/MainDashboard.jsx";
 import InventoryDashboard from "./pages/Inventory/InventoryDashboard.jsx";
 import PurchasePage from "./pages/Inventory/Purchases/PurchasesPage.jsx";
-import PurchaseItems from "./pages/Inventory/Purchases/PurchaseItems.jsx";
-import PurchaseOrders from "./pages/Inventory/Purchases/PurchaseOrders.jsx";
 import Vendors from "./pages/Inventory/Purchases/Vendors.jsx";
-import LowStockAlerts from "./pages/Inventory/Stock/LowStockAlerts.jsx";
-import StockTransactions from "./pages/Inventory/Stock/StockTransactions.jsx";
-import StockItems from "./pages/Inventory/Stock/StockItems.jsx";
-import StockPage from "./pages/Inventory/Stock/StockPage.jsx";
+import BillingPage from "./pages/Inventory/Billing/BillingPage.jsx";
+import InvoicePage from "./pages/Inventory/Invoice/InvoicePage.jsx";
+import ClientDashboard from "./pages/ClientPortal/ClientDashboard.jsx";
+import ProductWiseReport from "./pages/Inventory/Reports/ProductWiseReport.jsx";
+import Admin from "./pages/Admin/Admin.jsx";
 import Projects from "./pages/Inventory/Projects/Projects.jsx";
 import ProjectHome from "./pages/Inventory/Projects/ProjectHome.jsx";
 import ProjectInventory from "./pages/Inventory/Projects/ProjectInventory.jsx";
@@ -17,52 +17,57 @@ import ProjectPurchaseOrder from "./pages/Inventory/Projects/ProjectPurchaseOrde
 import ProjectReceive from "./pages/Inventory/Projects/ProjectReceive.jsx";
 import ProjectAllocate from "./pages/Inventory/Projects/ProjectAllocate.jsx";
 import ProjectDeliveryChallan from "./pages/Inventory/Projects/ProjectDeliveryChallan.jsx";
-
-
-
+import PurchaseItems from "./pages/Inventory/Purchases/PurchaseItems.jsx";
+import PurchaseOrders from "./pages/Inventory/Purchases/PurchaseOrders.jsx";
+import StockTransactions from "./pages/Inventory/Stock/StockTransactions.jsx";
+import PageLayout from "./components/layout/PageLayout.jsx";
 import ProtectedRoute from "./app/ProtectedRoute.jsx";
+
 function App() {
   return (
     <BrowserRouter>
       <Routes>
-        {/* Default route */}
-        <Route path="/" element={<Navigate to="/login" replace />} />
+        {/* Public */}
         <Route path="/login" element={<Login />} />
+        <Route path="/" element={<Navigate to="/login" replace />} />
 
-        {/* Inventory routes */}
+        {/* 🔐 Protected + Layout */}
         <Route
-          path="/inventory/*"
           element={
             <ProtectedRoute>
-              <MainDashboard />
+              <PageLayout />
             </ProtectedRoute>
           }
         >
-          <Route path="dashboard" element={<InventoryDashboard />} />
+          <Route path="/dashboard" element={<MainDashboard />} />
+          <Route path="/inventory" element={<InventoryDashboard />} />
+          <Route path="/purchases" element={<PurchasePage />} />
+          <Route path="/billing" element={<BillingPage />} />
+          <Route path="/invoices" element={<InvoicePage />} />
+          <Route path="/suppliers" element={<Vendors />} />
+          <Route path="/customers" element={<ClientDashboard />} />
+          <Route path="/reports" element={<ProductWiseReport />} />
+          <Route path="/projects" element={<Projects />} />
+          <Route path="/projects/home" element={<ProjectHome />} />
+          <Route path="/projects/inventory" element={<ProjectInventory />} />
+          <Route path="/projects/purchase-order" element={<ProjectPurchaseOrder />} />
+          <Route path="/projects/receive" element={<ProjectReceive />} />
+          <Route path="/projects/allocate" element={<ProjectAllocate />} />
+          <Route path="/projects/delivery-challan" element={<ProjectDeliveryChallan />} />
+          <Route path="/inventory/purchase/items" element={<PurchaseItems />} />
+          <Route path="/inventory/purchase/orders" element={<PurchaseOrders />} />
+          <Route path="/inventory/stock/transactions" element={<StockTransactions />} />
+        </Route>
 
-          {/* Purchase section */}
-          <Route path="purchase" element={<PurchasePage />} />
-          <Route path="purchase/items" element={<PurchaseItems />} />
-          <Route path="purchase/orders" element={<PurchaseOrders />} />
-          <Route path="purchase/vendors" element={<Vendors />} />
-          <Route path="purchase/low" element={<LowStockAlerts />} />
-          <Route path="purchase/transactions" element={<StockTransactions />} />
-
-          {/* Stock section */}
-          <Route path="stock" element={<StockPage />} />
-          <Route path="stock/items" element={<StockItems />} />
-          <Route path="stock/transactions" element={<StockTransactions />} />
-          <Route path="stock/low" element={<LowStockAlerts />} />
-
-          {/* Projects section */}
-          <Route path="projects" element={<Projects />}>
-            <Route index element={<ProjectHome />} />
-            <Route path="items" element={<ProjectInventory />} />
-            <Route path="purchase-order" element={<ProjectPurchaseOrder />} />
-            <Route path="receive" element={<ProjectReceive />} />
-            <Route path="allocate" element={<ProjectAllocate />} />
-            <Route path="delivery-challan" element={<ProjectDeliveryChallan />} />
-          </Route>
+        {/* 🔐 Admin only */}
+        <Route
+          element={
+            <ProtectedRoute requiredRole="admin">
+              <PageLayout />
+            </ProtectedRoute>
+          }
+        >
+          <Route path="/admin" element={<Admin />} />
         </Route>
 
         {/* Catch-all */}

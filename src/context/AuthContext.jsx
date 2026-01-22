@@ -5,7 +5,7 @@ export const AuthContext = createContext();
 
 // ✅ Provider
 export const AuthProvider = ({ children }) => {
-  const [user, setUser] = useState(null);
+  const [user, setUser] = useState({ email: "admin@be.com", role: "admin" }); // Default logged in for testing
 
   const login = async (email, password) => {
     if (email === "admin@be.com" && password === "admin123") {

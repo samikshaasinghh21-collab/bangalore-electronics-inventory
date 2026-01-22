@@ -1,11 +1,10 @@
-import PageLayout from "../../components/layout/PageLayout";
 import BarChart from "../../components/charts/BarChart"; // default import
 import { LineChart } from "../../components/charts/LineChart"; // named import
 import PieChart from "../../components/charts/PieChart";   // optional
 
 export default function MainDashboard() {
   return (
-    <PageLayout>
+    <>
       {/* KPI CARDS */}
       <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-6">
         <StatCard title="Total Sales (INR)" value="6,32,50,893" />
@@ -56,7 +55,7 @@ export default function MainDashboard() {
           <LineChart />
         </Card>
       </div>
-    </PageLayout>
+    </>
   );
 }
 

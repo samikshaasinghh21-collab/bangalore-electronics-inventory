@@ -18,9 +18,11 @@ export default function Sidebar() {
 
       <nav className="px-4 space-y-2">
         <NavItem to="/dashboard" icon={<LayoutDashboard size={18} />} label="Dashboard" />
-        <NavItem to="/invoices" icon={<FileText size={18} />} label="Invoices" />
         <NavItem to="/inventory" icon={<Package size={18} />} label="Products / Stock" />
         <NavItem to="/purchases" icon={<ShoppingCart size={18} />} label="Purchases" />
+        <NavItem to="/projects" icon={<ShoppingCart size={18} />} label="Projects" />
+        <NavItem to="/billing" icon={<FileText size={18} />} label="Billing" />
+        <NavItem to="/invoices" icon={<FileText size={18} />} label="Invoices" />
         <NavItem to="/suppliers" icon={<Truck size={18} />} label="Suppliers" />
         <NavItem to="/customers" icon={<Users size={18} />} label="Customers" />
         <NavItem to="/reports" icon={<BarChart3 size={18} />} label="Reports" />
