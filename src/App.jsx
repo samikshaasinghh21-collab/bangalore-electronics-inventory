@@ -1,5 +1,6 @@
 import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 
+// Pages
 import Login from "./pages/Auth/Login.jsx";
 import MainDashboard from "./pages/Dashboard/MainDashboard.jsx";
 import InventoryDashboard from "./pages/Inventory/InventoryDashboard.jsx";
@@ -20,6 +21,8 @@ import ProjectDeliveryChallan from "./pages/Inventory/Projects/ProjectDeliveryCh
 import PurchaseItems from "./pages/Inventory/Purchases/PurchaseItems.jsx";
 import PurchaseOrders from "./pages/Inventory/Purchases/PurchaseOrders.jsx";
 import StockTransactions from "./pages/Inventory/Stock/StockTransactions.jsx";
+
+// Layout & Route Guard
 import PageLayout from "./components/layout/PageLayout.jsx";
 import ProtectedRoute from "./app/ProtectedRoute.jsx";
 
@@ -27,11 +30,11 @@ function App() {
   return (
     <BrowserRouter>
       <Routes>
-        {/* Public */}
+        {/* Public Routes */}
         <Route path="/login" element={<Login />} />
         <Route path="/" element={<Navigate to="/login" replace />} />
 
-        {/* 🔐 Protected + Layout */}
+        {/* Protected Routes with PageLayout */}
         <Route
           element={
             <ProtectedRoute>
@@ -39,14 +42,30 @@ function App() {
             </ProtectedRoute>
           }
         >
+          {/* Dashboard */}
           <Route path="/dashboard" element={<MainDashboard />} />
+
+          {/* Inventory */}
           <Route path="/inventory" element={<InventoryDashboard />} />
+          <Route path="/inventory/stock/transactions" element={<StockTransactions />} />
+
+          {/* Purchases */}
           <Route path="/purchases" element={<PurchasePage />} />
+          <Route path="/inventory/purchase/items" element={<PurchaseItems />} />
+          <Route path="/inventory/purchase/orders" element={<PurchaseOrders />} />
+          <Route path="/suppliers" element={<Vendors />} />
+
+          {/* Billing & Invoices */}
           <Route path="/billing" element={<BillingPage />} />
           <Route path="/invoices" element={<InvoicePage />} />
-          <Route path="/suppliers" element={<Vendors />} />
+
+          {/* Customers */}
           <Route path="/customers" element={<ClientDashboard />} />
+
+          {/* Reports */}
           <Route path="/reports" element={<ProductWiseReport />} />
+
+          {/* Projects */}
           <Route path="/projects" element={<Projects />} />
           <Route path="/projects/home" element={<ProjectHome />} />
           <Route path="/projects/inventory" element={<ProjectInventory />} />
@@ -54,12 +73,9 @@ function App() {
           <Route path="/projects/receive" element={<ProjectReceive />} />
           <Route path="/projects/allocate" element={<ProjectAllocate />} />
           <Route path="/projects/delivery-challan" element={<ProjectDeliveryChallan />} />
-          <Route path="/inventory/purchase/items" element={<PurchaseItems />} />
-          <Route path="/inventory/purchase/orders" element={<PurchaseOrders />} />
-          <Route path="/inventory/stock/transactions" element={<StockTransactions />} />
         </Route>
 
-        {/* 🔐 Admin only */}
+        {/* Admin Only Routes */}
         <Route
           element={
             <ProtectedRoute requiredRole="admin">

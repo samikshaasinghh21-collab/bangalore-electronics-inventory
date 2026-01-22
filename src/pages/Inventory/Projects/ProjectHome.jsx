@@ -1,95 +1,50 @@
 import React from "react";
 import { useNavigate } from "react-router-dom";
-import { CheckCircle, FileText, Package, Truck, ClipboardList } from "lucide-react";
 
 export default function ProjectHome() {
   const navigate = useNavigate();
 
-  const handleNavigation = (path) => {
-    navigate(path);
-  };
+  const steps = [
+    { title: "Create Project – Specify Customer", path: "inventory" },
+    { title: "Tag Location", path: "inventory" },
+    { title: "Create Items for Purchase", path: "purchase-order" },
+    { title: "Create Purchase Order", path: "purchase-order" },
+    { title: "Receive Goods & Services", path: "receive" },
+    { title: "Allocate Inventory & Services", path: "allocate" },
+    { title: "Create Delivery Challan", path: "delivery-challan" },
+  ];
 
   return (
-    <div className="h-full">
-      <h2 className="text-2xl font-semibold mb-6">Create Project</h2>
+    <div className="w-full min-h-[80vh] bg-white rounded-xl shadow-lg p-12">
+      {/* Header */}
+      <div className="flex justify-between items-center mb-10">
+        <h1 className="text-3xl font-semibold text-gray-800">
+          Projects
+        </h1>
 
-      {/* Create Project Card */}
-      <div className="bg-white rounded-2xl shadow p-6 mb-10">
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-          <div>
-            <label className="block text-sm font-medium mb-1">Project Name</label>
-            <input
-              type="text"
-              placeholder="Project A"
-              className="w-full border rounded-lg p-2"
-            />
-          </div>
-          <div>
-            <label className="block text-sm font-medium mb-1">Location</label>
-            <select className="w-full border rounded-lg p-2">
-              <option>Chennai</option>
-              <option>Bangalore</option>
-              <option>Hyderabad</option>
-            </select>
-          </div>
-        </div>
-
-        {/* Navigation added here */}
         <button
-          className="mt-6 bg-blue-600 text-white px-6 py-2 rounded-lg"
-          onClick={() => handleNavigation("/inventory/projects/create")}
+          onClick={() => navigate("inventory")}
+          className="bg-blue-600 text-white text-lg px-8 py-4 rounded-lg hover:bg-blue-700 transition"
         >
-          Create Project
+          + Create Project
         </button>
       </div>
 
-      {/* Workflow Steps */}
-      <h3 className="text-lg font-semibold mb-4">Project Workflow</h3>
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-4">
-        <StepCard
-          title="Create Items"
-          subtitle="for Project"
-          icon={<ClipboardList className="w-8 h-8 text-green-600" />}
-          onClick={() => handleNavigation("/inventory/projects/items")}
-        />
-        <StepCard
-          title="Create"
-          subtitle="Purchase Order"
-          icon={<FileText className="w-8 h-8 text-blue-600" />}
-          onClick={() => handleNavigation("/inventory/projects/purchase-order")}
-        />
-        <StepCard
-          title="Receive"
-          subtitle="Goods & Services"
-          icon={<Package className="w-8 h-8 text-orange-600" />}
-          onClick={() => handleNavigation("/inventory/projects/receive")}
-        />
-        <StepCard
-          title="Allocate"
-          subtitle="Inventory & Services"
-          icon={<CheckCircle className="w-8 h-8 text-purple-600" />}
-          onClick={() => handleNavigation("/inventory/projects/allocate")}
-        />
-        <StepCard
-          title="Create"
-          subtitle="Delivery Challan"
-          icon={<Truck className="w-8 h-8 text-indigo-600" />}
-          onClick={() => handleNavigation("/inventory/projects/delivery-challan")}
-        />
+      {/* Steps */}
+      <div className="space-y-4">
+        {steps.map((step, index) => (
+          <div
+            key={index}
+            onClick={() => navigate(step.path)}
+            className="flex justify-between items-center border border-gray-200 rounded-lg px-8 py-5 cursor-pointer hover:bg-gray-50 transition"
+          >
+            <span className="text-xl text-gray-800">
+              {step.title}
+            </span>
+            <span className="text-3xl text-gray-400">›</span>
+          </div>
+        ))}
       </div>
-    </div>
-  );
-}
-
-function StepCard({ title, subtitle, icon, onClick }) {
-  return (
-    <div
-      className="bg-white rounded-2xl shadow p-5 flex flex-col items-center text-center hover:shadow-lg transition cursor-pointer"
-      onClick={onClick}
-    >
-      <div className="mb-3">{icon}</div>
-      <h4 className="font-semibold">{title}</h4>
-      <p className="text-sm text-gray-500">{subtitle}</p>
     </div>
   );
 }
