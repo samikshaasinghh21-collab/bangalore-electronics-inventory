@@ -10,6 +10,7 @@ export default function Topbar() {
         <div className="flex items-center gap-2">
           <User />
           <span className="text-sm">Admin</span>
+          
         </div>
       </div>
     </header>

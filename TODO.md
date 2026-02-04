@@ -1,24 +1,13 @@
-# TODO List for Sidebar Navigation Fix
+# Supplier Drawer Purchases Tab Implementation
 
-## Completed Tasks
-- [x] Analyze sidebar navigation issue
-- [x] Read Sidebar.jsx and routes.jsx files
-- [x] Create BillingPage.jsx in src/pages/Inventory/Billing/
-- [x] Create InvoicePage.jsx in src/pages/Inventory/Invoice/
-- [x] Update Sidebar.jsx to include Billing and Invoices links after Purchases and remove duplicate Invoices
-- [x] Update App.jsx to add flat routes for all sidebar items matching the links and wrap pages in PageLayout
-- [x] Add missing PageLayout import in App.jsx
-- [x] Fix ClientDashboard.jsx to have default export
-- [x] Update TODO.md with completed tasks
-
-## Pending Tasks
-- [ ] Test the navigation to ensure all sidebar links work correctly after logging in
-- [ ] Verify that pages load without errors
-- [ ] Check for any missing imports or dependencies
-
-## Notes
-- Added routes for /inventory, /purchases, /billing, /invoices, /suppliers, /customers, /reports in App.jsx
-- Billing and Invoices are placed after Purchases in the sidebar as requested
-- All routes are wrapped in ProtectedRoute for security and PageLayout for consistent UI
-- Fixed import issues and missing exports
-- Default authentication set to admin for testing
+## Tasks
+- [ ] Replace SupplierDrawer.jsx with proper drawer component structure
+- [ ] Add supplier header section with identity and trust info
+- [ ] Add supplier overview section with business info
+- [ ] Integrate SupplierStats component for intelligence section
+- [ ] Implement tabs system with active tab state management
+- [ ] Implement Purchases tab with table (PO Number, Date, Amount, Status)
+- [ ] Add status badges for purchase order statuses
+- [ ] Implement click-through behavior for table rows
+- [ ] Add empty states for Invoices, Payments, and Activity tabs
+- [ ] Test the drawer with different supplier data scenarios

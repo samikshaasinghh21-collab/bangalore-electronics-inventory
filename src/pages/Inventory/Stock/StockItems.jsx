@@ -1,6 +1,8 @@
 import React, { useState } from "react";
+import { useCart } from "../../context/CartContext";
 
 const StockItems = () => {
+  const { addToCart } = useCart();
   const [items, setItems] = useState([
     {
       id: 1,
@@ -243,7 +245,12 @@ const StockItems = () => {
                 </td>
 
                 <td className="px-4 py-2 text-center">
-                  <button onClick={() => deleteItem(item.id)}>🗑</button>
+                  <button
+                    onClick={() => addToCart(item)}
+                    className="bg-green-600 text-white px-3 py-1 rounded"
+                  >
+                    Add to Cart
+                  </button>
                 </td>
               </tr>
             ))}

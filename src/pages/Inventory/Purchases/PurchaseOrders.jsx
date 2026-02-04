@@ -1,257 +1,355 @@
 import React, { useState } from "react";
+import { useCart } from "../../../context/CartContext";
+import { useInvoices } from "../../../context/InvoiceContext";
+import { useNavigate } from "react-router-dom";
 
-const StockItems = () => {
-  const [items, setItems] = useState([
-    {
-      id: 1,
-      name: "MX204-HWBASE-AC-FS",
-      description:
-        "MX204 Fixed AC System - HW and STD Junos; Feature right to use must be ordered separately",
-      hsn: "85176290",
-      qty: 2,
-      unit: "Nos",
-      rate: 568924.43,
-    },
-    {
-      id: 2,
-      name: "CBL-EX-PWR-C13-IN",
-      description: "AC Power Cable - India (6A/250V, 2.5m)",
-      hsn: "854442",
-      qty: 4,
-      unit: "Nos",
-      rate: 1746.77,
-    },
-    {
-      id: 3,
-      name: "QSFPP 4X10GE-SR",
-      description:
-        "QSFP+, 4x10GBASE-SR, MMF OM3/OM4, MPO-12 connector",
-      hsn: "851762",
-      qty: 6,
-      unit: "Nos",
-      rate: 20853.92,
-    },
-    {
-      id: 4,
-      name: "SFPP-10G-LR-C",
-      description: "SFP, 1G, Copper 100m, RJ-45 connector",
-      hsn: "85176290",
-      qty: 8,
-      unit: "Nos",
-      rate: 2696.76,
-    },
-    {
-      id: 5,
-      name: "RJ45 CONNECTOR (SFP-1G-T-C)",
-      description: "SFP, 1G, Copper 100m",
-      hsn: "85366990",
-      qty: 8,
-      unit: "Nos",
-      rate: 4208.58,
-    },
-    {
-      id: 6,
-      name: "S-MX-4C-A1-C1-P",
-      description: "SW, MX, 4x100GE ports, Adv1, Class 1, Perpetual",
-      hsn: "997331",
-      qty: 2,
-      unit: "Nos",
-      rate: 201567.49,
-    },
-    {
-      id: 7,
-      name: "PAR-SUP-MX-4C-A1P",
-      description: "PSS Basic Support for S-MX-4C-A1-C1-P",
-      hsn: "998313",
-      qty: 2,
-      unit: "Nos",
-      rate: 226849.61,
-    },
-    {
-      id: 8,
-      name: "PAR-NDS-MX204-B",
-      description: "PSS Next Day Ship Support for MX204-HW-BASE",
-      hsn: "998313",
-      qty: 2,
-      unit: "Nos",
-      rate: 206968.67,
-    },
-    {
-      id: 9,
-      name: "EX9208-RED3B-AC",
-      description:
-        "EX9208 8-slot chassis with routing engines, PSUs, fan tray",
-      hsn: "85176290",
-      qty: 2,
-      unit: "Nos",
-      rate: 1940647.0,
-    },
-    {
-      id: 10,
-      name: "CBL-M-PWR-RA-EU",
-      description: "M320 AC Power Cable, Europe, Right Angle",
-      hsn: "85444299",
-      qty: 8,
-      unit: "Nos",
-      rate: 2083.86,
-    },
-    {
-      id: 11,
-      name: "EX9200-40XS",
-      description: "0-port 10GbE SFP+ line card; MACsec capable",
-      hsn: "85176290",
-      qty: 2,
-      unit: "Nos",
-      rate: 962865.9,
-    },
-    {
-      id: 12,
-      name: "SFPP-10G-SR-C",
-      description: "SFP+, 10GBASE-SR, Duplex LC connector",
-      hsn: "85176290",
-      qty: 20,
-      unit: "Nos",
-      rate: 2574.18,
-    },
-    {
-      id: 13,
-      name: "SFP-1G-SX-C",
-      description: "SFP, 1G, MMF, Duplex LC connector",
-      hsn: "85176290",
-      qty: 28,
-      unit: "Nos",
-      rate: 1866.28,
-    },
-    {
-      id: 14,
-      name: "PAR-NDS-EX9208-3B",
-      description: "PSS Next Day Ship Support for EX9208-BASE3B",
-      hsn: "998313",
-      qty: 2,
-      unit: "Nos",
-      rate: 1198257.8,
-    },
-    {
-      id: 15,
-      name: "EX4400-24X",
-      description: "24x10GbaseX switch with 2x100G uplink ports",
-      hsn: "851762",
-      qty: 2,
-      unit: "Nos",
-      rate: 303354.86,
-    },
-    {
-      id: 16,
-      name: "EX4400-EM-1C",
-      description: "1x100G MACsec AES256 extension module",
-      hsn: "851762",
-      qty: 2,
-      unit: "Nos",
-      rate: 69395.6,
-    },
-    {
-      id: 17,
-      name: "S-EX-P-C2-P",
-      description: "SW, EX, Premium, Class 2 (24 ports), Perpetual",
-      hsn: "997311",
-      qty: 2,
-      unit: "Nos",
-      rate: 66627.34,
-    },
-    {
-      id: 18,
-      name: "JPSU-550-C-AC-AFO",
-      description: "550W compact AC power supply for EX4400",
-      hsn: "850440",
-      qty: 2,
-      unit: "Nos",
-      rate: 18468.72,
-    },
-    {
-      id: 19,
-      name: "CBL-EX-PWR-C13-IN",
-      description: "AC Power Cable - India (6A/250V, 2.5m)",
-      hsn: "854442",
-      qty: 2,
-      unit: "Nos",
-      rate: 1746.77,
-    },
-  ]);
+const PurchaseOrders = () => {
+  const { cart, updateQty, removeItem, clearCart, addToCart } = useCart();
+  const { addInvoice } = useInvoices();
+  const navigate = useNavigate();
 
-  const increaseQty = (id) => {
-    setItems(items.map(i =>
-      i.id === id ? { ...i, qty: i.qty + 1 } : i
-    ));
+  const [selectedItems, setSelectedItems] = useState([]);
+  const [message, setMessage] = useState("");
+
+  const [showProductForm, setShowProductForm] = useState(false);
+
+  const [productForm, setProductForm] = useState({
+    part_number: "",
+    product_description: "",
+    hsn_code: "",
+    uom: "NOS",
+    quantity: 1,
+    reorder_level: "",
+    serial_required: false,
+    purchase_price: "",
+    selling_price: "",
+    gst_rate: 18,
+    status: "ACTIVE",
+  });
+
+  const gstRate = 0.18;
+
+  const subtotal = cart.reduce(
+    (sum, i) => sum + i.qty * i.rate,
+    0
+  );
+
+  const gstAmount = subtotal * gstRate;
+  const grandTotal = subtotal + gstAmount;
+
+  // ✅ Select / Unselect item
+  const toggleSelect = (item) => {
+    setSelectedItems((prev) =>
+      prev.find((i) => i.id === item.id)
+        ? prev.filter((i) => i.id !== item.id)
+        : [...prev, item]
+    );
   };
 
-  const decreaseQty = (id) => {
-    setItems(items.map(i =>
-      i.id === id && i.qty > 1 ? { ...i, qty: i.qty - 1 } : i
-    ));
+  // ✅ Add selected items back to cart (or confirm selection)
+  const addSelectedToCart = () => {
+    selectedItems.forEach((item) => addToCart(item));
+    setSelectedItems([]);
+    navigate("/inventory/cart");
   };
 
-  const deleteItem = (id) => {
-    setItems(items.filter(i => i.id !== id));
+  // ✅ Save PO
+  const savePO = () => {
+    if (cart.length === 0) {
+      alert("Cart is empty");
+      return;
+    }
+
+    const invoice = {
+      invoiceNo: `INV-${Date.now()}`,
+      supplier: "Juniper Networks",
+      items: cart,
+      subtotal,
+      gstAmount,
+      grandTotal,
+      createdAt: new Date().toISOString(),
+    };
+
+    addInvoice(invoice);
+    clearCart();
+    navigate("/invoices");
+  };
+
+  const saveProductAndAddToCart = () => {
+    if (!productForm.part_number || !productForm.hsn_code) {
+      alert("Part Number and HSN Code are mandatory");
+      return;
+    }
+
+    addToCart({
+      id: Date.now(),
+      name: productForm.part_number,
+      description: productForm.product_description,
+      hsn: productForm.hsn_code,
+      qty: Number(productForm.quantity),
+      unit: productForm.uom,
+      rate: Number(productForm.purchase_price),
+      gst_rate: productForm.gst_rate,
+      serial_required: productForm.serial_required,
+    });
+
+    setShowProductForm(false);
   };
 
   return (
     <div className="p-6 bg-gray-100 min-h-screen">
-      <h1 className="text-3xl font-bold mb-2">
-        Purchase Order – Stock Items
-      </h1>
-      <p className="mb-4 text-gray-600">
-        Bangalore Electronics · PO# 2K25BEPO7
-      </p>
+      <div className="flex justify-between items-center mb-4">
+        <h1 className="text-2xl font-bold">Purchase Order</h1>
+        <button
+          onClick={() => setShowProductForm(true)}
+          className="bg-indigo-600 text-white px-4 py-2 rounded"
+        >
+          + New Product
+        </button>
+      </div>
 
-      <div className="overflow-x-auto bg-white rounded-xl shadow">
-        <table className="w-full table-auto text-sm">
+      {/* Status Message */}
+      {message && (
+        <div className="mb-4 bg-green-100 text-green-700 px-4 py-2 rounded">
+          {message}
+        </div>
+      )}
+
+      <div className="overflow-x-auto bg-white shadow rounded">
+        <table className="w-full text-sm">
           <thead className="bg-gray-200">
             <tr>
-              <th className="px-4 py-2">#</th>
-              <th className="px-4 py-2">Item</th>
-              <th className="px-4 py-2">Description</th>
-              <th className="px-4 py-2">HSN</th>
-              <th className="px-4 py-2 text-center">Qty</th>
-              <th className="px-4 py-2 text-right">Rate (₹)</th>
-              <th className="px-4 py-2 text-right">Amount (₹)</th>
-              <th className="px-4 py-2 text-center">Action</th>
+              <th className="p-2 text-center">Select</th>
+              <th className="p-2">Item</th>
+              <th className="p-2 text-right">Qty</th>
+              <th className="p-2 text-right">Rate</th>
+              <th className="p-2 text-right">Amount</th>
+              <th className="p-2 text-center">Actions</th>
             </tr>
           </thead>
 
           <tbody>
-            {items.map((item, index) => (
-              <tr key={item.id} className="border-b hover:bg-gray-50">
-                <td className="px-4 py-2">{index + 1}</td>
-                <td className="px-4 py-2 font-medium">{item.name}</td>
-                <td className="px-4 py-2 text-gray-600">{item.description}</td>
-                <td className="px-4 py-2">{item.hsn}</td>
+            {cart.length === 0 && (
+              <tr>
+                <td colSpan="6" className="p-4 text-center text-gray-500">
+                  No items in cart
+                </td>
+              </tr>
+            )}
 
-                <td className="px-4 py-2">
-                  <div className="flex justify-center gap-2">
-                    <button onClick={() => decreaseQty(item.id)}>−</button>
-                    <span>{item.qty}</span>
-                    <button onClick={() => increaseQty(item.id)}>+</button>
-                  </div>
+            {cart.map((item) => (
+              <tr key={item.id} className="border-b">
+                {/* Select */}
+                <td className="p-2 text-center">
+                  <input
+                    type="checkbox"
+                    checked={selectedItems.some((i) => i.id === item.id)}
+                    onChange={() => toggleSelect(item)}
+                  />
                 </td>
 
-                <td className="px-4 py-2 text-right">
-                  {item.rate.toLocaleString("en-IN", { minimumFractionDigits: 2 })}
+                <td className="p-2 font-medium">{item.name}</td>
+
+                {/* Qty Update */}
+                <td className="p-2 text-right">
+                  <input
+                    type="number"
+                    min="1"
+                    value={item.qty}
+                    className="border w-20 px-1"
+                    onChange={(e) =>
+                      updateQty(item.id, Number(e.target.value))
+                    }
+                  />
                 </td>
 
-                <td className="px-4 py-2 text-right font-semibold">
-                  {(item.qty * item.rate).toLocaleString("en-IN", { minimumFractionDigits: 2 })}
+                <td className="p-2 text-right">
+                  ₹{item.rate.toLocaleString("en-IN")}
                 </td>
 
-                <td className="px-4 py-2 text-center">
-                  <button onClick={() => deleteItem(item.id)}>🗑</button>
+                <td className="p-2 text-right font-semibold">
+                  ₹{(item.qty * item.rate).toLocaleString("en-IN")}
+                </td>
+
+                {/* Actions */}
+                <td className="p-2 text-center">
+                  <button
+                    onClick={() => removeItem(item.id)}
+                    className="text-red-600 hover:underline"
+                  >
+                    Delete
+                  </button>
                 </td>
               </tr>
             ))}
           </tbody>
         </table>
       </div>
+
+      {/* Totals */}
+      <div className="mt-4 text-right">
+        <p>Subtotal: ₹{subtotal.toLocaleString("en-IN")}</p>
+        <p>GST (18%): ₹{gstAmount.toLocaleString("en-IN")}</p>
+        <p className="font-bold text-lg">
+          Grand Total: ₹{grandTotal.toLocaleString("en-IN")}
+        </p>
+      </div>
+
+      {/* Actions */}
+      <div className="mt-6 flex gap-3 justify-end">
+        <button
+          onClick={addSelectedToCart}
+          disabled={selectedItems.length === 0}
+          className="bg-green-600 text-white px-4 py-2 rounded disabled:opacity-50"
+        >
+          Add Selected to Cart
+        </button>
+
+        <button
+          onClick={savePO}
+          className="bg-blue-600 text-white px-6 py-2 rounded"
+        >
+          Save Purchase Order
+        </button>
+      </div>
+
+      {showProductForm && (
+        <div className="fixed inset-0 bg-black bg-opacity-40 flex justify-center items-center">
+          <div className="bg-white p-6 rounded-lg w-[600px] max-h-[90vh] overflow-y-auto">
+            <h2 className="text-xl font-bold mb-4">Product Master Entry</h2>
+
+            <div className="grid grid-cols-2 gap-3">
+              <input
+                placeholder="Part Number / SKU *"
+                className="border p-2"
+                onChange={(e) =>
+                  setProductForm({ ...productForm, part_number: e.target.value })
+                }
+              />
+
+              <input
+                placeholder="HSN Code *"
+                className="border p-2"
+                onChange={(e) =>
+                  setProductForm({ ...productForm, hsn_code: e.target.value })
+                }
+              />
+
+              <input
+                placeholder="Product Description"
+                className="border p-2 col-span-2"
+                onChange={(e) =>
+                  setProductForm({
+                    ...productForm,
+                    product_description: e.target.value,
+                  })
+                }
+              />
+
+              <input
+                placeholder="Purchase Price"
+                type="number"
+                className="border p-2"
+                onChange={(e) =>
+                  setProductForm({
+                    ...productForm,
+                    purchase_price: e.target.value,
+                  })
+                }
+              />
+
+              <input
+                placeholder="Selling Price"
+                type="number"
+                className="border p-2"
+                onChange={(e) =>
+                  setProductForm({
+                    ...productForm,
+                    selling_price: e.target.value,
+                  })
+                }
+              />
+
+              <input
+                placeholder="Quantity"
+                type="number"
+                className="border p-2"
+                onChange={(e) =>
+                  setProductForm({ ...productForm, quantity: e.target.value })
+                }
+              />
+
+              <input
+                placeholder="Reorder Level"
+                type="number"
+                className="border p-2"
+                onChange={(e) =>
+                  setProductForm({
+                    ...productForm,
+                    reorder_level: e.target.value,
+                  })
+                }
+              />
+
+              <select
+                className="border p-2"
+                onChange={(e) =>
+                  setProductForm({ ...productForm, uom: e.target.value })
+                }
+              >
+                <option value="NOS">NOS</option>
+                <option value="PCS">PCS</option>
+                <option value="KG">KG</option>
+              </select>
+
+              <select
+                className="border p-2"
+                onChange={(e) =>
+                  setProductForm({
+                    ...productForm,
+                    gst_rate: Number(e.target.value),
+                  })
+                }
+              >
+                <option value={18}>GST 18%</option>
+                <option value={12}>GST 12%</option>
+                <option value={5}>GST 5%</option>
+                <option value={0}>GST 0%</option>
+              </select>
+
+              <label className="flex items-center gap-2 col-span-2">
+                <input
+                  type="checkbox"
+                  onChange={(e) =>
+                    setProductForm({
+                      ...productForm,
+                      serial_required: e.target.checked,
+                    })
+                  }
+                />
+                Serial Number Required
+              </label>
+            </div>
+
+            <div className="flex justify-end gap-3 mt-4">
+              <button
+                onClick={() => setShowProductForm(false)}
+                className="px-4 py-2 border rounded"
+              >
+                Cancel
+              </button>
+              <button
+                onClick={saveProductAndAddToCart}
+                className="px-4 py-2 bg-blue-600 text-white rounded"
+              >
+                Save & Add to Cart
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 };
 
-export default StockItems;
+export default PurchaseOrders;

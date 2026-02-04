@@ -26,6 +26,7 @@ export default function Sidebar() {
         <NavItem to="/suppliers" icon={<Truck size={18} />} label="Suppliers" />
         <NavItem to="/customers" icon={<Users size={18} />} label="Customers" />
         <NavItem to="/reports" icon={<BarChart3 size={18} />} label="Reports" />
+        <NavItem to="/inventory/cart" icon={<ShoppingCart size={18} />} label="Cart" />
       </nav>
     </aside>
   );

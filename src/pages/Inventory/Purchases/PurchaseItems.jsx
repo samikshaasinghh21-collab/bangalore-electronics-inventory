@@ -1,6 +1,62 @@
-import React from "react";
- 
-const StockItems = () => {
+import React, { useState } from "react";
+import { useNavigate } from "react-router-dom";
+import { useCart } from "../../../context/CartContext";
+
+const PurchaseItems = () => {
+  const navigate = useNavigate();
+  const { addToCart } = useCart();
+
+  const [selectedItems, setSelectedItems] = useState([]);
+  const [showProductForm, setShowProductForm] = useState(false);
+
+  const [productForm, setProductForm] = useState({
+    name: "",
+    description: "",
+    hsn: "",
+    qty: 1,
+    unit: "Nos",
+    rate: "",
+  });
+
+  const toggleSelect = (item) => {
+    setSelectedItems((prev) =>
+      prev.find((i) => i.id === item.id)
+        ? prev.filter((i) => i.id !== item.id)
+        : [...prev, item]
+    );
+  };
+
+  const addSelectedToCart = () => {
+    selectedItems.forEach((item) => {
+      addToCart({ ...item });
+    });
+
+    setSelectedItems([]);
+    navigate("/inventory/purchase/orders");
+  };
+
+  const addRowToCart = (item) => {
+    addToCart({ ...item });
+    navigate("/inventory/purchase/orders");
+  };
+
+  const saveProduct = () => {
+    if (!productForm.name || !productForm.hsn || !productForm.rate) {
+      alert("Item Name, HSN, and Rate are required");
+      return;
+    }
+
+    addToCart({
+      id: Date.now(),
+      ...productForm,
+      rate: Number(productForm.rate),
+      qty: Number(productForm.qty),
+    });
+
+    setShowProductForm(false);
+    navigate("/inventory/purchase/orders");
+  };
+
   const items = [
     {
       id: 1,
@@ -181,13 +237,37 @@ const StockItems = () => {
  
   return (
     <div className="p-6 bg-gray-100 min-h-screen">
-      <h1 className="text-3xl font-bold mb-2">Purchase Order – Stock Items</h1>
-      <p className="mb-4 text-gray-600">Bangalore Electronics · PO# 2K25BEPO7</p>
- 
+      <div className="flex justify-between items-center mb-4">
+        <div>
+          <h1 className="text-3xl font-bold">Purchase Order – Stock Items</h1>
+          <p className="text-gray-600">
+            Bangalore Electronics · PO# 2K25BEPO7
+          </p>
+        </div>
+
+        <div className="flex gap-2">
+          <button
+            onClick={() => setShowProductForm(true)}
+            className="bg-indigo-600 text-white px-4 py-2 rounded"
+          >
+            + New Product
+          </button>
+
+          <button
+            onClick={addSelectedToCart}
+            disabled={selectedItems.length === 0}
+            className="bg-green-600 text-white px-4 py-2 rounded disabled:opacity-50"
+          >
+            Add Selected
+          </button>
+        </div>
+      </div>
+
       <div className="overflow-x-auto bg-white rounded-xl shadow">
         <table className="w-full table-auto text-sm">
           <thead className="bg-gray-200">
             <tr className="text-left">
+              <th className="px-4 py-2 text-center">Select</th>
               <th className="px-4 py-2">#</th>
               <th className="px-4 py-2">Item</th>
               <th className="px-4 py-2">Description</th>
@@ -201,8 +281,17 @@ const StockItems = () => {
             {items.map((item, index) => (
               <tr
                 key={item.id}
-                className="border-b hover:bg-gray-50 transition"
+                className="border-b hover:bg-gray-50 cursor-pointer"
+                onDoubleClick={() => addRowToCart(item)} // ✅ Double click add
               >
+                <td className="px-4 py-2 text-center">
+                  <input
+                    type="checkbox"
+                    checked={selectedItems.some((i) => i.id === item.id)}
+                    onChange={() => toggleSelect(item)}
+                    onClick={(e) => e.stopPropagation()}
+                  />
+                </td>
                 <td className="px-4 py-2">{index + 1}</td>
                 <td className="px-4 py-2 font-medium">{item.name}</td>
                 <td className="px-4 py-2 text-gray-600 max-w-md">
@@ -225,10 +314,38 @@ const StockItems = () => {
           </tbody>
         </table>
       </div>
+
+      {showProductForm && (
+        <div className="fixed inset-0 bg-black bg-opacity-40 flex items-center justify-center">
+          <div className="bg-white p-6 rounded-lg w-[500px]">
+            <h2 className="text-xl font-bold mb-4">Add New Product</h2>
+
+            <input className="border p-2 w-full mb-2" placeholder="Item Name"
+              onChange={(e) => setProductForm({ ...productForm, name: e.target.value })}
+            />
+            <input className="border p-2 w-full mb-2" placeholder="Description"
+              onChange={(e) => setProductForm({ ...productForm, description: e.target.value })}
+            />
+            <input className="border p-2 w-full mb-2" placeholder="HSN Code"
+              onChange={(e) => setProductForm({ ...productForm, hsn: e.target.value })}
+            />
+            <input type="number" className="border p-2 w-full mb-2" placeholder="Rate"
+              onChange={(e) => setProductForm({ ...productForm, rate: e.target.value })}
+            />
+
+            <div className="flex justify-end gap-3 mt-4">
+              <button onClick={() => setShowProductForm(false)}>Cancel</button>
+              <button onClick={saveProduct} className="bg-blue-600 text-white px-4 py-2 rounded">
+                Save & Add
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 };
- 
-export default StockItems;
+
+export default PurchaseItems;
  
  
