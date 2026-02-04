@@ -14,6 +14,7 @@ import StockTransactions from "../pages/Inventory/Stock/StockTransactions";
 import ClientDashboard from "../pages/ClientPortal/ClientDashboard";
 import ProductWiseReport from "../pages/Inventory/Reports/ProductWiseReport";
 import Login from "../pages/Auth/Login";
+import Cart from "../pages/Inventory/Cart/Cart";
 import ProtectedRoute from "./ProtectedRoute";
 import CartProvider from "../context/CartContext";
 
@@ -96,6 +97,17 @@ const routes = [
     element: (
       <ProtectedRoute>
         <StockTransactions />
+      </ProtectedRoute>
+    ),
+  },
+
+  {
+    path: "/inventory/cart",
+    element: (
+      <ProtectedRoute>
+        <CartProvider>
+          <Cart />
+        </CartProvider>
       </ProtectedRoute>
     ),
   },

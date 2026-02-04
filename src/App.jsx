@@ -24,14 +24,13 @@ import ProjectDeliveryChallan from "./pages/Inventory/Projects/ProjectDeliveryCh
 import PurchaseItems from "./pages/Inventory/Purchases/PurchaseItems.jsx";
 import PurchaseOrders from "./pages/Inventory/Purchases/PurchaseOrders.jsx";
 import StockTransactions from "./pages/Inventory/Stock/StockTransactions.jsx";
+import Cart from "./pages/Inventory/Cart/Cart.jsx";
 import PageLayout from "./components/layout/PageLayout.jsx";
 import ProtectedRoute from "./app/ProtectedRoute.jsx";
 import { CartProvider } from "./context/CartContext.jsx";
-import { InvoiceProvider } from "./context/InvoiceContext.jsx";
 function App() {
   return (
-    <BrowserRouter>
-      <Routes>
+    <Routes>
         {/* Public */}
         <Route path="/login" element={<Login />} />
         <Route path="/" element={<Navigate to="/login" replace />} />
@@ -62,6 +61,8 @@ function App() {
           <Route path="/inventory/purchase/items" element={<PurchaseItems />} />
           <Route path="/inventory/purchase/orders" element={<PurchaseOrders />} />
           <Route path="/inventory/stock/transactions" element={<StockTransactions />} />
+          <Route path="/inventory/cart" element={<CartProvider><Cart /></CartProvider>} />
+          <Route path="/inventory/purchase/vendors" element={<Vendors />} />
         </Route>
 
         {/* 🔐 Admin only */}
@@ -78,7 +79,6 @@ function App() {
         {/* Catch-all */}
         <Route path="*" element={<Navigate to="/login" replace />} />
       </Routes>
-    </BrowserRouter>
   );
 }
 
